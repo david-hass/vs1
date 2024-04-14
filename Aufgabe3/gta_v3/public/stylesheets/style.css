@@ -1,0 +1,301 @@
+/*
+  File origin: VS1LAB A1b  
+
+  CSS style is BEM. Classes used for CSS, IDs for JavaScript querying (future use).
+  CSS variables used for clarity and themability (e.g. through SSR). 
+  Inherited box sizing used for ease of including 3rd party content-box components.
+*/
+
+/* Global styling */
+
+html {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+
+  /* This approach prevents issues with 3rd party content-box components */
+  box-sizing: inherit;
+}
+
+
+/* Variables (example: see declaration for "a" below) */
+
+:root {
+  --site-background-color: #efefef;
+  --surface-background-color: #D6D6D6;
+  --accent-color: #D1A3A4;
+  --text-color: #333333;
+  --highlight-color: #FFF8E1;
+}
+
+
+
+/* HTML element styles */
+
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: calc(0.5rem + 0.5vw);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--site-background-color);
+  color: var(--text-color);
+}
+
+a {
+  color: var(--accent-color);
+}
+
+img {
+  object-fit: contain;
+  min-width: 2vw;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+input {
+  width: 100%;
+  padding: 1vh calc(8px + 1.5vw);
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type=submit] {
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: var(--highlight-color);
+}
+
+fieldset {
+  padding: 2vh 2vw;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+h1 {
+  font-size: calc(1rem + 2vw);
+}
+
+
+/* Grid styles (no changes required) */
+
+.row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.col-1 {
+  width: calc(8.33% - 1rem);
+}
+
+.col-2 {
+  width: calc(16.66% - 1rem);
+}
+
+.col-3 {
+  width: calc(25% - 1rem);
+}
+
+.col-4 {
+  width: calc(33.33% - 1rem);
+}
+
+.col-5 {
+  width: calc(41.66% - 1rem);
+}
+
+.col-6 {
+  width: calc(50% - 1rem);
+}
+
+.col-7 {
+  width: calc(58.33% - 1rem);
+}
+
+.col-8 {
+  width: calc(66.66% - 1rem);
+}
+
+.col-9 {
+  width: calc(75% - 1rem);
+}
+
+.col-10 {
+  width: calc(83.33% - 1rem);
+}
+
+.col-11 {
+  width: calc(91.66% - 1rem);
+}
+
+.col-12 {
+  width: calc(100% - 1rem);
+}
+
+.header,
+.footer {
+  padding: 2vh 2vw;
+  max-height: 10vh;
+  background-color: var(--surface-background-color);
+}
+
+/* ### TODO ### Styles for Header Component */
+
+.header {}
+
+.header>* {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header> :first-child {
+  justify-content: flex-start;
+}
+
+.header> :last-child {
+  justify-content: flex-end;
+}
+
+/* ### TODO ### Styles for Main Component */
+
+.main {
+  padding: 0vh 10vw;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.main>* {
+  padding: 5vh 1vw;
+  display: flex;
+  flex-flow: column;
+  gap: 2vh;
+}
+
+.tagging {
+  display: flex;
+  flex-direction: column;
+}
+
+.tagging>form {
+  flex: 1;
+}
+
+.discovery {
+  display: flex;
+  flex-direction: column;
+}
+
+.discovery__search>fieldset {
+  padding-right: 20%;
+}
+
+.discovery__wrapper {
+  gap: 2vw;
+  min-height: 0;
+}
+
+.discovery__taglist {
+  display: flex;
+  flex-direction: column;
+}
+
+.discovery__taglist>ul {
+  list-style-type: none;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.discovery__taglist>ul>li {
+  padding: 6px;
+  border: 1px solid #ccc;
+  background: var(--surface-background-color);
+  margin-bottom: 1vh;
+}
+
+.discovery__map {
+  flex: 1;
+}
+
+.discovery__map>img {
+  min-height: 0;
+  height: auto;
+  width: 100%;
+  object-position: left;
+}
+
+/* ### TODO ### Styles for Footer Component */
+
+.footer {
+  align-items: end;
+}
+
+
+/* ### TODO ### Media Queries */
+
+@media only screen and (max-width: 768px) {
+
+  .row {
+    flex-direction: column;
+  }
+
+  .row>* {
+    width: 100%;
+  }
+
+  .header,
+  .footer {
+    max-height: 5vh;
+    padding: 1vh 0vw;
+  }
+
+  .main {
+    max-height: 90vh;
+  }
+
+  .header img {
+    display: none;
+  }
+
+  .header>h1 {
+    display: none;
+  }
+
+  .header>:last-child {
+    justify-content: center;
+  }
+
+  .main>* {
+    padding: 1vh 1vw;
+  }
+
+  .discovery__search>fieldset {
+    padding: 2vh 2vw;
+  }
+
+  .discovery__taglist {
+    max-height: 20vh;
+  }
+
+  .discovery__wrapper {
+    flex-direction: column-reverse;
+  }
+
+  .footer {
+    align-content: normal;
+    justify-content: end;
+  }
+}
