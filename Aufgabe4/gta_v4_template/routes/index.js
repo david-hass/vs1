@@ -24,8 +24,12 @@ const GeoTag = require('../models/geotag');
  * The module "geotag-store" exports a class GeoTagStore. 
  * It provides an in-memory store for geotag objects.
  */
-// eslint-disable-next-line no-unused-vars
 const GeoTagStore = require('../models/geotag-store');
+const GeoTagExamples = require('../models/geotag-examples');
+
+const geoTagStore = new GeoTagStore()
+
+GeoTagExamples.tagList.map(e => new GeoTag(...e)).forEach((t) => geoTagStore.addGeoTag(t))
 
 // App routes (A3)
 
@@ -55,9 +59,13 @@ router.get('/', (req, res) => {
  * If 'searchterm' is present, it will be filtered by search term.
  * If 'latitude' and 'longitude' are available, it will be further filtered based on radius.
  */
-
-// TODO: ... your code here ...
-
+router.get('/api/geotags', (req, res) => {
+  const term = req.query.searchterm;
+  const latitude = req.query.latitude;
+  const longitude = req.query.longitude;
+  const radius = req.query.radius;
+  res.json(geoTagStore.getGeoTags({ latitude, longitude }, term, radius))
+});
 
 /**
  * Route '/api/geotags' for HTTP 'POST' requests.
@@ -69,8 +77,18 @@ router.get('/', (req, res) => {
  * The URL of the new resource is returned in the header as a response.
  * The new resource is rendered as JSON in the response.
  */
-
-// TODO: ... your code here ...
+router.post('/api/geotags', (req, res) => {
+  let name, latitude, longitude,
+    hashtag = req.body.hashtag;
+  if ((name = req.body.name)
+    && (latitude = req.body.latitude)
+    && (longitude = req.body.longitude)) {
+    const newTag = new GeoTag(name, latitude, longitude, hashtag)
+    const createdTag = geoTagStore.addGeoTag(newTag)
+    res.setHeader("Location", "/api/geotags/" + createdTag.id)
+    res.status(201).json(createdTag)
+  }
+});
 
 
 /**
@@ -82,8 +100,13 @@ router.get('/', (req, res) => {
  *
  * The requested tag is rendered as JSON in the response.
  */
-
-// TODO: ... your code here ...
+router.get('/api/geotags/:id', (req, res) => {
+  if (req.params.id) {
+    const tag = geoTagStore.getGeoTag(req.params.id)
+    res.setHeader("Location", "/api/geotags/" + tag.id)
+    res.json(tag)
+  }
+});
 
 
 /**
@@ -99,8 +122,14 @@ router.get('/', (req, res) => {
  * Changes the tag with the corresponding ID to the sent value.
  * The updated resource is rendered as JSON in the response. 
  */
+router.put('/api/geotags/:id', (req, res) => {
+  if (req.params.id && req.body) {
+    const updatedTag = geoTagStore.updateGeoTag(req.params.id, req.body)
+    res.setHeader("Location", "/api/geotags/" + updatedTag.id)
+    res.json(updatedTag)
+  }
+});
 
-// TODO: ... your code here ...
 
 
 /**
@@ -113,7 +142,12 @@ router.get('/', (req, res) => {
  * Deletes the tag with the corresponding ID.
  * The deleted resource is rendered as JSON in the response.
  */
+router.delete('/api/geotags/:id', (req, res) => {
+  if (req.params.id) {
+    const deleteTag = geoTagStore.removeGeoTag(req.params.id)
+    res.json(deleteTag)
+  }
+});
 
-// TODO: ... your code here ...
 
 module.exports = router;
