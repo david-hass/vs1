@@ -24,6 +24,8 @@
  * - Keyword matching should include partial matches from name or hashtag fields. 
  */
 
+const pageSize = 5;
+
 class InMemoryGeoTagStore {
     #nextId = 0;
     #state = {};
@@ -55,8 +57,10 @@ class InMemoryGeoTagStore {
         return deleteTag
     }
 
-    getGeoTags(loc, term, radius = 1) {
+    getGeoTags(loc, term, radius = 1, page = 1) {
         let tags = Object.values(this.#state)
+        page = +page
+        radius = +radius
 
         if (loc.latitude && loc.longitude) {
             tags = tags.filter(t =>
@@ -64,10 +68,22 @@ class InMemoryGeoTagStore {
                 && (+loc.longitude - +radius <= +t.longitude && +t.longitude <= +loc.longitude + +radius)
             )
         }
+
         if (term) {
-            tags = tags.filter(t => t.name.includes(term) || t.hashtag.includes(term))
+            tags = tags.filter(t => t.name.toLowerCase().includes(term.toLowerCase()) || t.hashtag?.toLowerCase().includes(term.toLowerCase()))
         }
-        return tags
+
+        const totalTags = tags.length
+        const maxPages = Math.ceil(totalTags / pageSize)
+
+        if (page < 1)
+            page += 1
+        if (page > maxPages)
+            page -= 1
+
+        tags = tags.slice((page - 1) * pageSize, page * pageSize)
+
+        return { tags, page, maxPages }
     }
 }
 

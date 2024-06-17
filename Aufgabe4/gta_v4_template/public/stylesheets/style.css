@@ -226,6 +226,17 @@ h1 {
   margin-bottom: 1vh;
 }
 
+
+.discovery__pagination {
+  display: inline-block;
+}
+
+.discovery__pagination a {
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
 .discovery__map {
   flex: 1;
 }

@@ -81,19 +81,26 @@ class MapManager {
      * @param {number} zoom The map zoom, defaults to 10
      * @returns {string} URL of generated map
      */
-    getMapUrl(latitude, longitude, tags = [], zoom = 10) {
+    getMapUrl(latitude, longitude, tags = [], zoom = 15) {
         if (this.#apiKey === '') {
             console.log("No API key provided.");
             return "images/mapview.jpg";
         }
 
-        let tagList = `${latitude},${longitude}|marker-start`;
-        tagList += tags.reduce((acc, tag) => `${acc}||${tag.latitude},${tag.longitude}|flag-${tag.name}`, "");
+        const tagList = tags.reduce(
+            (acc, tag) => acc += `|lonlat:${tag.longitude},${tag.latitude};color:#654321`
+            , `lonlat:${longitude},${latitude};type:material;color:#4c905a`);
 
-        const mapQuestUrl = `https://www.mapquestapi.com/staticmap/v5/map?key=${this.#apiKey}&size=600,400&zoom=${zoom}&center=${latitude},${longitude}&locations=${tagList}`;
-        console.log("Generated MapQuest URL:", mapQuestUrl);
+        const url =
+            "https://maps.geoapify.com/v1/staticmap?style=osm-bright-smooth"
+            + "&width=600"
+            + "&height=400"
+            + `&center=lonlat:${longitude},${latitude}`
+            + `&zoom=${zoom}`
+            + `&marker=${encodeURIComponent(tagList)}`
+            + "&apiKey=cea0d0153a7444249aba237f37fedcdd"
 
-        return mapQuestUrl;
+        return url
     }
 }
 
@@ -102,9 +109,15 @@ class MapManager {
  * A function to retrieve the current location and update the page.
  * It is called once the page has been fully loaded.
  */
-// ... your code here ...
+
+function updateLocation() {
+    LocationHelper.findLocation(({ latitude, longitude }) => {
+        const url = new MapManager().getMapUrl(latitude, longitude)
+        document.querySelector("#mapView").src = url
+    })
+}
 
 // Wait for the page to fully load its DOM content, then call updateLocation
 document.addEventListener("DOMContentLoaded", () => {
-    alert("Please change the script 'geotagging.js'");
+    updateLocation()
 });

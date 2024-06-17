@@ -64,7 +64,8 @@ router.get('/api/geotags', (req, res) => {
   const latitude = req.query.latitude;
   const longitude = req.query.longitude;
   const radius = req.query.radius;
-  res.json(geoTagStore.getGeoTags({ latitude, longitude }, term, radius))
+  const page = req.query.page;
+  res.json(geoTagStore.getGeoTags({ latitude, longitude }, term, radius, page))
 });
 
 /**
